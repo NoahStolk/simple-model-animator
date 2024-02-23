@@ -1,5 +1,6 @@
 using ImGuiNET;
 using Silk.NET.GLFW;
+using SimpleModelAnimator.State;
 
 namespace SimpleModelAnimator;
 
@@ -14,12 +15,12 @@ public static class Shortcuts
 
 	private static readonly List<Shortcut> _shortcuts =
 	[
-		// new(New, Keys.N, true, false, "New level", LevelState.New),
-		// new(Open, Keys.O, true, false, "Open level", LevelState.Load),
-		// new(Save, Keys.S, true, false, "Save level", LevelState.Save),
-		// new(SaveAs, Keys.S, true, true, "Save level as", LevelState.SaveAs),
-		// new(Undo, Keys.Z, true, false, "Undo", () => LevelState.SetHistoryIndex(LevelState.CurrentHistoryIndex - 1)),
-		// new(Redo, Keys.Y, true, false, "Redo", () => LevelState.SetHistoryIndex(LevelState.CurrentHistoryIndex + 1)),
+		new(New, Keys.N, true, false, "New level", AnimationState.New),
+		new(Open, Keys.O, true, false, "Open level", AnimationState.Load),
+		new(Save, Keys.S, true, false, "Save level", AnimationState.Save),
+		new(SaveAs, Keys.S, true, true, "Save level as", AnimationState.SaveAs),
+		new(Undo, Keys.Z, true, false, "Undo", () => AnimationState.SetHistoryIndex(AnimationState.CurrentHistoryIndex - 1)),
+		new(Redo, Keys.Y, true, false, "Redo", () => AnimationState.SetHistoryIndex(AnimationState.CurrentHistoryIndex + 1)),
 	];
 
 	public static IReadOnlyList<Shortcut> ShortcutsList => _shortcuts;

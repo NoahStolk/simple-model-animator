@@ -1,4 +1,5 @@
-﻿using SimpleModelAnimator.Formats.Animation.Model;
+﻿using SimpleModelAnimator.Formats.Animation.BinaryFormat;
+using SimpleModelAnimator.Formats.Animation.Model;
 using SimpleModelAnimator.Rendering;
 using System.Security.Cryptography;
 
@@ -44,10 +45,9 @@ public static class AnimationState
 
 	private static byte[] GetBytes(AnimationData obj)
 	{
-		return [];
-		// using MemoryStream ms = new();
-		// LevelXmlSerializer.WriteLevel(ms, obj);
-		// return ms.ToArray();
+		using MemoryStream ms = new();
+		AnimationBinarySerializer.WriteAnimation(ms, obj);
+		return ms.ToArray();
 	}
 
 	public static void New()
@@ -66,18 +66,18 @@ public static class AnimationState
 
 	private static void LoadCallback(string? path)
 	{
-		// if (path == null)
-		// 	return;
-		//
-		// using (FileStream fs = new(path, FileMode.Open))
-		// {
-		// 	AnimationData level = LevelXmlDeserializer.ReadLevel(fs);
-		// 	SetAnimation(path, level);
-		// }
-		//
-		// ClearState();
-		// AssetLoadScheduleState.Schedule(path);
-		// Track("Reset");
+		if (path == null)
+			return;
+
+		using (FileStream fs = new(path, FileMode.Open))
+		{
+			AnimationData animation = AnimationBinaryDeserializer.ReadAnimation(fs);
+			SetAnimation(path, animation);
+		}
+
+		ClearState();
+		AssetLoadScheduleState.Schedule(path);
+		Track("Reset");
 	}
 
 	public static void Save()
@@ -162,10 +162,10 @@ public static class AnimationState
 
 	private static void Save(string path)
 	{
-		// using MemoryStream ms = new();
-		// LevelXmlSerializer.WriteLevel(ms, Level);
-		// File.WriteAllBytes(path, ms.ToArray());
-		// SetAnimation(path, Level);
+		using MemoryStream ms = new();
+		AnimationBinarySerializer.WriteAnimation(ms, Animation);
+		File.WriteAllBytes(path, ms.ToArray());
+		SetAnimation(path, Animation);
 	}
 
 	private static void SetAnimation(string? animationFilePath, AnimationData animation)

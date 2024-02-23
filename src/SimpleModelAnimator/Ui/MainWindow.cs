@@ -73,5 +73,6 @@ public static class MainWindow
 		}
 
 		AnimationEditorWindow.Render();
+		AnimationAssetsWindow.Render();
 	}
 }
