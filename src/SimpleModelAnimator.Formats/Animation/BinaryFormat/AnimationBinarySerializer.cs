@@ -38,18 +38,31 @@ public static class AnimationBinarySerializer
 		bw.Write7BitEncodedInt(animationMeshes.Count);
 		foreach (AnimationMesh am in animationMeshes)
 		{
-			bw.Write(am.MeshName);
-			bw.Write(am.Origin);
-			bw.WriteOptional(am.ParentMeshName);
-			bw.Write7BitEncodedInt(am.KeyFrames.Count);
-			foreach (AnimationKeyFrame kf in am.KeyFrames)
-			{
-				bw.Write7BitEncodedInt(kf.Index);
-				bw.Write(kf.Position);
-				bw.Write(kf.Rotation);
-			}
+			WriteAnimationMesh(bw, am);
 		}
 
 		return ms.ToArray();
+	}
+
+	private static void WriteAnimationMesh(BinaryWriter bw, AnimationMesh am)
+	{
+		bw.Write(am.MeshName);
+		bw.Write(am.IsRoot);
+		bw.Write(am.Origin);
+
+		bw.Write7BitEncodedInt(am.Children.Count);
+		foreach (AnimationMesh child in am.Children)
+			WriteAnimationMesh(bw, child);
+
+		bw.Write7BitEncodedInt(am.KeyFrames.Count);
+		foreach (AnimationKeyFrame kf in am.KeyFrames)
+			WriteAnimationKeyFrame(bw, kf);
+	}
+
+	private static void WriteAnimationKeyFrame(BinaryWriter bw, AnimationKeyFrame kf)
+	{
+		bw.Write7BitEncodedInt(kf.Index);
+		bw.Write(kf.Position);
+		bw.Write(kf.Rotation);
 	}
 }

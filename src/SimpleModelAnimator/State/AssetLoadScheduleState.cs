@@ -1,3 +1,5 @@
+using SimpleModelAnimator.Rendering;
+
 namespace SimpleModelAnimator.State;
 
 /// <summary>
@@ -17,7 +19,19 @@ public static class AssetLoadScheduleState
 		if (!_needsLoad)
 			return;
 
-		bool reloadedSuccessfully = AnimationState.ReloadAssets();
+		bool reloadedSuccessfully;
+
+		try
+		{
+			ModelContainer.Rebuild();
+			reloadedSuccessfully = true;
+		}
+		catch (Exception ex)
+		{
+			DebugState.AddWarning($"Failed to reload assets: {ex.Message}");
+			reloadedSuccessfully = false;
+		}
+
 		_needsLoad = !reloadedSuccessfully;
 	}
 }

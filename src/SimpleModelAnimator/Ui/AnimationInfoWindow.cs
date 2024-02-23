@@ -2,7 +2,6 @@
 using ImGuiNET;
 using SimpleModelAnimator.Formats.Animation.Model;
 using SimpleModelAnimator.State;
-using SimpleModelAnimator.Utils;
 using System.Globalization;
 
 namespace SimpleModelAnimator.Ui;
@@ -35,11 +34,12 @@ public static class AnimationInfoWindow
 
 		if (ImGui.TreeNode("Meshes"))
 		{
-			if (ImGui.BeginTable("MeshTable", 4))
+			if (ImGui.BeginTable("MeshTable", 5))
 			{
 				ImGui.TableSetupColumn("Name");
+				ImGui.TableSetupColumn("Root", ImGuiTableColumnFlags.WidthFixed, 32);
 				ImGui.TableSetupColumn("Origin");
-				ImGui.TableSetupColumn("Parent");
+				ImGui.TableSetupColumn("Children");
 				ImGui.TableSetupColumn("Key frames");
 
 				ImGui.TableHeadersRow();
@@ -54,10 +54,37 @@ public static class AnimationInfoWindow
 					ImGui.Text(mesh.MeshName);
 
 					ImGui.TableNextColumn();
+					ImGui.Text(mesh.IsRoot ? "Yes" : "No");
+
+					ImGui.TableNextColumn();
 					ImGui.Text(Inline.Span(mesh.Origin, "0.00", CultureInfo.InvariantCulture));
 
 					ImGui.TableNextColumn();
-					ImGuiUtils.TextOptional(mesh.ParentMeshName);
+					ImGui.Text(Inline.Span(mesh.Children.Count));
+
+					if (ImGui.IsItemHovered() && mesh.Children.Count > 0)
+					{
+						ImGui.BeginTooltip();
+						if (ImGui.BeginTable("ChildTable", 1))
+						{
+							ImGui.TableSetupColumn("Name");
+							ImGui.TableHeadersRow();
+
+							for (int j = 0; j < mesh.Children.Count; j++)
+							{
+								AnimationMesh child = mesh.Children[j];
+
+								ImGui.TableNextRow();
+
+								ImGui.TableNextColumn();
+								ImGui.Text(child.MeshName);
+							}
+
+							ImGui.EndTable();
+						}
+
+						ImGui.EndTooltip();
+					}
 
 					ImGui.TableNextColumn();
 					ImGui.Text(Inline.Span(mesh.KeyFrames.Count));

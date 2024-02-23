@@ -1,8 +1,5 @@
-﻿using Detach.Parsers.Model;
-using Detach.Parsers.Model.ObjFormat;
-using SimpleModelAnimator.Formats.Animation.BinaryFormat;
+﻿using SimpleModelAnimator.Formats.Animation.BinaryFormat;
 using SimpleModelAnimator.Formats.Animation.Model;
-using SimpleModelAnimator.Rendering;
 using System.Security.Cryptography;
 
 namespace SimpleModelAnimator.State;
@@ -57,7 +54,7 @@ public static class AnimationState
 		AnimationData animation = AnimationData.CreateDefault();
 		SetAnimation(null, animation);
 		ClearState();
-		ReloadAssets();
+		AssetLoadScheduleState.Schedule();
 		Track("Reset");
 	}
 
@@ -76,34 +73,36 @@ public static class AnimationState
 			AnimationData animation = AnimationBinaryDeserializer.ReadAnimation(fs);
 
 			// TEMP DATA
+			AnimationMesh baseMesh = animation.Meshes[0];
+			AnimationMesh primaryArm = animation.Meshes[1];
+			AnimationMesh secondaryArm = animation.Meshes[2];
+			AnimationMesh torus = animation.Meshes[3];
 
-			// Torus
-			animation.Meshes[3].ParentMeshName = "ArmSecondary";
-			animation.Meshes[3].KeyFrames.Add(new(0, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
-			animation.Meshes[3].KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 4f)));
-			animation.Meshes[3].KeyFrames.Add(new(60, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
+			baseMesh.IsRoot = true;
+			baseMesh.KeyFrames.Add(new(0, Vector3.Zero, Quaternion.Identity));
+			baseMesh.KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitZ, MathF.PI / 4f)));
+			baseMesh.KeyFrames.Add(new(60, Vector3.Zero, Quaternion.Identity));
+			baseMesh.Children.Add(primaryArm);
 
-			// ArmSecondary
-			animation.Meshes[2].ParentMeshName = "ArmPrimary";
-			animation.Meshes[2].KeyFrames.Add(new(0, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 2f)));
-			animation.Meshes[2].KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 4f)));
-			animation.Meshes[2].KeyFrames.Add(new(60, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 2f)));
+			primaryArm.KeyFrames.Add(new(0, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
+			primaryArm.KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 4f)));
+			primaryArm.KeyFrames.Add(new(60, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
+			primaryArm.Children.Add(secondaryArm);
 
-			// ArmPrimary
-			animation.Meshes[1].ParentMeshName = "Base";
-			animation.Meshes[1].KeyFrames.Add(new(0, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
-			animation.Meshes[1].KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 4f)));
-			animation.Meshes[1].KeyFrames.Add(new(60, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
+			secondaryArm.KeyFrames.Add(new(0, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 2f)));
+			secondaryArm.KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 4f)));
+			secondaryArm.KeyFrames.Add(new(60, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 2f)));
+			secondaryArm.Children.Add(torus);
 
-			// Base
-			animation.Meshes[0].KeyFrames.Add(new(0, Vector3.Zero, Quaternion.Identity));
-			animation.Meshes[0].KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitZ, MathF.PI / 4f)));
-			animation.Meshes[0].KeyFrames.Add(new(60, Vector3.Zero, Quaternion.Identity));
+			torus.KeyFrames.Add(new(0, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
+			torus.KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 4f)));
+			torus.KeyFrames.Add(new(60, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
 
 			SetAnimation(path, animation);
 		}
 
 		ClearState();
+		ObjState.Load();
 		AssetLoadScheduleState.Schedule();
 		Track("Reset");
 	}
@@ -206,26 +205,6 @@ public static class AnimationState
 
 	private static void ClearState()
 	{
-		// LevelEditorState.SetSelectedWorldObject(null);
-		// LevelEditorState.SetSelectedEntity(null);
-		// WorldObjectEditorWindow.Reset();
-		// EntityEditorWindow.Reset();
-	}
-
-	public static bool ReloadAssets()
-	{
-		try
-		{
-			if (ObjState.ModelData == null)
-				return false;
-
-			ModelContainer.Rebuild(ObjState.ModelData);
-			return true;
-		}
-		catch (Exception ex)
-		{
-			DebugState.AddWarning($"Failed to reload assets: {ex.Message}");
-			return false;
-		}
+		ObjState.Clear();
 	}
 }

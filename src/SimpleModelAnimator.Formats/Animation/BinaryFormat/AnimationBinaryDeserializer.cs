@@ -57,27 +57,39 @@ public static class AnimationBinaryDeserializer
 	{
 		using MemoryStream ms = new(data);
 		using BinaryReader br = new(ms);
+
 		int count = br.Read7BitEncodedInt();
 		List<AnimationMesh> animationMeshes = [];
 		for (int i = 0; i < count; i++)
-		{
-			string meshName = br.ReadString();
-			Vector3 origin = br.ReadVector3();
-			string? parentMeshName = br.ReadOptionalString();
-			int keyFrameCount = br.Read7BitEncodedInt();
-			List<AnimationKeyFrame> keyFrames = [];
-			for (int j = 0; j < keyFrameCount; j++)
-			{
-				int index = br.Read7BitEncodedInt();
-				Vector3 position = br.ReadVector3();
-				Quaternion rotation = br.ReadQuaternion();
-				keyFrames.Add(new(index, position, rotation));
-			}
-
-			AnimationMesh am = new(meshName, origin, parentMeshName, keyFrames);
-			animationMeshes.Add(am);
-		}
+			animationMeshes.Add(ReadAnimationMesh(br));
 
 		return animationMeshes;
+	}
+
+	private static AnimationMesh ReadAnimationMesh(BinaryReader br)
+	{
+		string meshName = br.ReadString();
+		bool isRoot = br.ReadBoolean();
+		Vector3 origin = br.ReadVector3();
+
+		int childCount = br.Read7BitEncodedInt();
+		List<AnimationMesh> children = [];
+		for (int j = 0; j < childCount; j++)
+			children.Add(ReadAnimationMesh(br));
+
+		int keyFrameCount = br.Read7BitEncodedInt();
+		List<AnimationKeyFrame> keyFrames = [];
+		for (int j = 0; j < keyFrameCount; j++)
+			keyFrames.Add(ReadAnimationKeyFrame(br));
+
+		return new(meshName, isRoot, origin, children, keyFrames);
+	}
+
+	private static AnimationKeyFrame ReadAnimationKeyFrame(BinaryReader br)
+	{
+		int index = br.Read7BitEncodedInt();
+		Vector3 position = br.ReadVector3();
+		Quaternion rotation = br.ReadQuaternion();
+		return new(index, position, rotation);
 	}
 }

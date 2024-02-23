@@ -19,4 +19,9 @@ public static class ObjState
 
 		ModelData = ObjParser.Parse(File.ReadAllBytes(absolutePath));
 	}
+
+	public static void Clear()
+	{
+		ModelData = null;
+	}
 }

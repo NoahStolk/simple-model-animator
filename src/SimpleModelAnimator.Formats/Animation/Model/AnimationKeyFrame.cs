@@ -14,4 +14,9 @@ public class AnimationKeyFrame
 		Position = position;
 		Rotation = rotation;
 	}
+
+	public AnimationKeyFrame DeepCopy()
+	{
+		return new(Index, Position, Rotation);
+	}
 }

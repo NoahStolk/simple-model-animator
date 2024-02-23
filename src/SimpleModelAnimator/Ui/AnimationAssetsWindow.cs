@@ -13,7 +13,7 @@ public static class AnimationAssetsWindow
 		if (ImGui.Begin("Animation Assets"))
 		{
 			if (ImGui.Button("Reload"))
-				AnimationState.ReloadAssets();
+				AssetLoadScheduleState.Schedule();
 
 			RenderModelSource();
 		}
@@ -77,6 +77,6 @@ public static class AnimationAssetsWindow
 			origin += modelData.Positions[vertex - 1];
 		origin /= meshData.Faces.Count;
 
-		return new(meshData.ObjectName, origin, null, []);
+		return new(meshData.ObjectName, false, origin, [], []);
 	}
 }

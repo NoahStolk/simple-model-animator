@@ -1,6 +1,7 @@
 using Detach.Parsers.Model;
 using Silk.NET.OpenGL;
 using SimpleModelAnimator.Content.Data;
+using SimpleModelAnimator.State;
 using SimpleModelAnimator.Utils;
 
 namespace SimpleModelAnimator.Rendering;
@@ -14,11 +15,12 @@ public static class ModelContainer
 
 	public static IReadOnlyList<MeshEntry> Meshes => _meshes;
 
-	public static void Rebuild(ModelData modelData)
+	public static void Rebuild()
 	{
 		_meshes.Clear();
 
-		if (modelData.Meshes.Count == 0)
+		ModelData? modelData = ObjState.ModelData;
+		if (modelData == null || modelData.Meshes.Count == 0)
 			return;
 
 		foreach (MeshData meshData in modelData.Meshes)
