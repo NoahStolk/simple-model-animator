@@ -8,5 +8,6 @@ public static class MainLogic
 	{
 		AssetLoadScheduleState.LoadIfScheduled();
 		AnimationPlayerState.Update(dt);
+		AnimationTransformState.CalculateTransformations();
 	}
 }

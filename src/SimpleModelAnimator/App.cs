@@ -4,6 +4,7 @@ using ImGuiGlfw;
 using ImGuiNET;
 using Silk.NET.GLFW;
 using Silk.NET.OpenGL;
+using SimpleModelAnimator.Logic;
 using SimpleModelAnimator.Ui;
 using SimpleModelAnimator.User;
 using System.Runtime.InteropServices;
@@ -105,6 +106,7 @@ public sealed class App
 		Graphics.Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
 
 		Shortcuts.Handle();
+		MainLogic.Run(FrameTime);
 
 		ImGui.DockSpaceOverViewport(null, ImGuiDockNodeFlags.PassthruCentralNode);
 

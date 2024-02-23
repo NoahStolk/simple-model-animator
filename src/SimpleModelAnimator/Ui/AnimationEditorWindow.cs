@@ -1,6 +1,5 @@
 using ImGuiNET;
 using SimpleModelAnimator.Content;
-using SimpleModelAnimator.Logic;
 using SimpleModelAnimator.Rendering;
 using SimpleModelAnimator.State;
 
@@ -58,10 +57,7 @@ public static class AnimationEditorWindow
 			ImGui.SetCursorPos(cursorPosition);
 			ImGui.InvisibleButton("3d_view", framebufferSize);
 			bool isFocused = ImGui.IsItemHovered();
-			float dt = ImGui.GetIO().DeltaTime;
-			Camera3d.Update(dt, isFocused);
-
-			MainLogic.Run(dt);
+			Camera3d.Update(App.Instance.FrameTime, isFocused);
 		}
 
 		ImGui.End();

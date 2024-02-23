@@ -60,7 +60,7 @@ public static class ModelContainer
 				lineIndices.Add(edge.Key.B);
 			}
 
-			MeshEntry entry = new(mesh, vao, lineIndices.ToArray(), VaoUtils.CreateLineVao(modelData.Positions.ToArray()));
+			MeshEntry entry = new(meshData.ObjectName, mesh, vao, lineIndices.ToArray(), VaoUtils.CreateLineVao(modelData.Positions.ToArray()));
 			_meshes.Add(entry);
 		}
 

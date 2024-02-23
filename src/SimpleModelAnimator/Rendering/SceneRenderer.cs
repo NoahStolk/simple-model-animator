@@ -112,11 +112,12 @@ public static class SceneRenderer
 	{
 		int modelUniform = meshShader.GetUniformLocation("model");
 
-		Gl.UniformMatrix4x4(modelUniform, Matrix4x4.Identity);
 		Gl.BindTexture(TextureTarget.Texture2D, InternalContent.Textures["Blank"]);
 
 		foreach (MeshEntry mesh in ModelContainer.Meshes)
 		{
+			Gl.UniformMatrix4x4(modelUniform, mesh.Transformation);
+
 			Gl.BindVertexArray(mesh.MeshVao);
 			fixed (uint* index = &mesh.Mesh.Indices[0])
 				Gl.DrawElements(PrimitiveType.Triangles, (uint)mesh.Mesh.Indices.Length, DrawElementsType.UnsignedInt, index);
