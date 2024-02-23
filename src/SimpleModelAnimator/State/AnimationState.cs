@@ -1,4 +1,6 @@
-﻿using SimpleModelAnimator.Formats.Animation.BinaryFormat;
+﻿using Detach.Parsers.Model;
+using Detach.Parsers.Model.ObjFormat;
+using SimpleModelAnimator.Formats.Animation.BinaryFormat;
 using SimpleModelAnimator.Formats.Animation.Model;
 using SimpleModelAnimator.Rendering;
 using System.Security.Cryptography;
@@ -55,7 +57,7 @@ public static class AnimationState
 		AnimationData animation = AnimationData.CreateDefault();
 		SetAnimation(null, animation);
 		ClearState();
-		ReloadAssets(null);
+		ReloadAssets();
 		Track("Reset");
 	}
 
@@ -76,7 +78,7 @@ public static class AnimationState
 		}
 
 		ClearState();
-		AssetLoadScheduleState.Schedule(path);
+		AssetLoadScheduleState.Schedule();
 		Track("Reset");
 	}
 
@@ -184,12 +186,14 @@ public static class AnimationState
 		// EntityEditorWindow.Reset();
 	}
 
-	public static bool ReloadAssets(string? animationFilePath)
+	public static bool ReloadAssets()
 	{
 		try
 		{
-			ModelContainer.Rebuild(animationFilePath);
-			TextureContainer.Rebuild(animationFilePath);
+			if (ObjState.ModelData == null)
+				return false;
+
+			ModelContainer.Rebuild(ObjState.ModelData);
 			return true;
 		}
 		catch (Exception ex)

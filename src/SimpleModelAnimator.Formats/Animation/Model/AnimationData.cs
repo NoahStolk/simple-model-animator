@@ -3,8 +3,7 @@
 public class AnimationData
 {
 	public required float FramesPerSecond;
-	public required List<string> RelativeModelPaths;
-	public required List<string> RelativeTexturePaths;
+	public required string? ObjPath;
 	public required List<AnimationMesh> Meshes;
 
 	public static AnimationData CreateDefault()
@@ -12,22 +11,13 @@ public class AnimationData
 		return new()
 		{
 			FramesPerSecond = 30,
-			RelativeModelPaths = [],
-			RelativeTexturePaths = [],
+			ObjPath = string.Empty,
 			Meshes = [],
 		};
 	}
 
 	public AnimationData DeepCopy()
 	{
-		List<string> newRelativeModelPaths = [];
-		for (int i = 0; i < RelativeModelPaths.Count; i++)
-			newRelativeModelPaths.Add(RelativeModelPaths[i]);
-
-		List<string> newRelativeTexturePaths = [];
-		for (int i = 0; i < RelativeTexturePaths.Count; i++)
-			newRelativeTexturePaths.Add(RelativeTexturePaths[i]);
-
 		List<AnimationMesh> newMeshes = [];
 		for (int i = 0; i < Meshes.Count; i++)
 			newMeshes.Add(Meshes[i].DeepCopy());
@@ -35,8 +25,7 @@ public class AnimationData
 		return new()
 		{
 			FramesPerSecond = FramesPerSecond,
-			RelativeModelPaths = newRelativeModelPaths,
-			RelativeTexturePaths = newRelativeTexturePaths,
+			ObjPath = ObjPath,
 			Meshes = newMeshes,
 		};
 	}

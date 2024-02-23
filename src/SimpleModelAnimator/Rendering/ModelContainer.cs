@@ -1,45 +1,27 @@
 using Detach.Parsers.Model;
-using Detach.Parsers.Model.ObjFormat;
 using Silk.NET.OpenGL;
 using SimpleModelAnimator.Content.Data;
-using SimpleModelAnimator.State;
 using SimpleModelAnimator.Utils;
 
 namespace SimpleModelAnimator.Rendering;
 
+/// <summary>
+/// Converts and holds OpenGL data from the OBJ model.
+/// </summary>
 public static class ModelContainer
 {
-	private static readonly Dictionary<string, List<MeshEntry>> _models = new();
+	private static readonly List<MeshEntry> _meshes = [];
 
-	public static List<MeshEntry> GetMeshes(string modelPath)
+	public static IReadOnlyList<MeshEntry> Meshes => _meshes;
+
+	public static void Rebuild(ModelData modelData)
 	{
-		return _models.TryGetValue(modelPath, out List<MeshEntry>? meshes) ? meshes : [];
-	}
+		_meshes.Clear();
 
-	public static void Rebuild(string? animationFilePath)
-	{
-		_models.Clear();
-
-		string? animationDirectory = Path.GetDirectoryName(animationFilePath);
-		if (animationDirectory == null)
+		if (modelData.Meshes.Count == 0)
 			return;
 
-		foreach (string modelPath in AnimationState.Animation.RelativeModelPaths)
-		{
-			string absolutePath = Path.Combine(animationDirectory, modelPath);
-
-			if (!File.Exists(absolutePath))
-				continue;
-
-			ModelData modelData = ObjParser.Parse(File.ReadAllBytes(absolutePath));
-			if (modelData.Meshes.Count == 0)
-				continue;
-
-			foreach (MeshData meshData in modelData.Meshes)
-				AddMesh(modelPath, modelData, meshData);
-		}
-
-		void AddMesh(string meshPath, ModelData modelData, MeshData meshData)
+		foreach (MeshData meshData in modelData.Meshes)
 		{
 			Mesh mesh = GetMesh(modelData, meshData);
 			uint vao = CreateFromMesh(mesh);
@@ -77,10 +59,7 @@ public static class ModelContainer
 			}
 
 			MeshEntry entry = new(mesh, vao, lineIndices.ToArray(), VaoUtils.CreateLineVao(modelData.Positions.ToArray()));
-			if (!_models.TryGetValue(meshPath, out List<MeshEntry>? meshes))
-				_models.Add(meshPath, [entry]);
-			else
-				meshes.Add(entry);
+			_meshes.Add(entry);
 		}
 
 		void AddEdge(IDictionary<Edge, List<Vector3>> edges, Edge d, Vector3 normal)

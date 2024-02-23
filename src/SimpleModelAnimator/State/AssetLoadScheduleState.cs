@@ -6,12 +6,10 @@ namespace SimpleModelAnimator.State;
 public static class AssetLoadScheduleState
 {
 	private static bool _needsLoad;
-	private static string? _path;
 
-	public static void Schedule(string? path)
+	public static void Schedule()
 	{
 		_needsLoad = true;
-		_path = path;
 	}
 
 	public static void LoadIfScheduled()
@@ -19,7 +17,7 @@ public static class AssetLoadScheduleState
 		if (!_needsLoad)
 			return;
 
-		bool reloadedSuccessfully = AnimationState.ReloadAssets(_path);
+		bool reloadedSuccessfully = AnimationState.ReloadAssets();
 		_needsLoad = !reloadedSuccessfully;
 	}
 }

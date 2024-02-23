@@ -21,10 +21,10 @@ public static class AnimationBinaryDeserializer
 			throw new NotSupportedException("Unsupported version");
 
 		float framesPerSecond = br.ReadSingle();
+		bool hasObjPath = br.ReadBoolean();
+		string? objPath = hasObjPath ? br.ReadString() : null;
 
 		// Sections
-		List<string> modelPaths = [];
-		List<string> texturePaths = [];
 		List<AnimationMesh> animationMeshes = [];
 
 		int sectionCount = br.Read7BitEncodedInt();
@@ -35,12 +35,6 @@ public static class AnimationBinaryDeserializer
 			byte[] sectionData = br.ReadBytes(sectionLength);
 			switch (sectionId)
 			{
-				case AnimationBinaryConstants.ModelsSectionId:
-					modelPaths = ReadStringListSection(sectionData);
-					break;
-				case AnimationBinaryConstants.TexturesSectionId:
-					texturePaths = ReadStringListSection(sectionData);
-					break;
 				case AnimationBinaryConstants.MeshesSectionId:
 					animationMeshes = ReadMeshesSection(sectionData);
 					break;
@@ -50,21 +44,9 @@ public static class AnimationBinaryDeserializer
 		return new()
 		{
 			FramesPerSecond = framesPerSecond,
-			RelativeModelPaths = modelPaths,
-			RelativeTexturePaths = texturePaths,
+			ObjPath = objPath,
 			Meshes = animationMeshes,
 		};
-	}
-
-	private static List<string> ReadStringListSection(byte[] data)
-	{
-		using MemoryStream ms = new(data);
-		using BinaryReader br = new(ms);
-		int count = br.Read7BitEncodedInt();
-		List<string> result = [];
-		for (int i = 0; i < count; i++)
-			result.Add(br.ReadString());
-		return result;
 	}
 
 	private static List<AnimationMesh> ReadMeshesSection(byte[] data)
@@ -77,14 +59,8 @@ public static class AnimationBinaryDeserializer
 		{
 			string relativeModelPath = br.ReadString();
 			string meshName = br.ReadString();
-			string textureName = br.ReadString();
 
-			AnimationMesh am = new()
-			{
-				RelativeModelPath = relativeModelPath,
-				MeshName = meshName,
-				TextureName = textureName,
-			};
+			AnimationMesh am = new(relativeModelPath, meshName);
 			animationMeshes.Add(am);
 		}
 

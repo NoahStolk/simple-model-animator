@@ -14,29 +14,19 @@ public static class AnimationBinarySerializer
 		bw.Write(AnimationBinaryConstants.Header);
 		bw.Write7BitEncodedInt(_version);
 		bw.Write(animation.FramesPerSecond);
+		bw.Write(animation.ObjPath != null);
+		if (animation.ObjPath != null)
+			bw.Write(animation.ObjPath);
 
 		// Sections
 		List<Section> sections =
 		[
-			new(AnimationBinaryConstants.ModelsSectionId, WriteStringListSection(animation.RelativeModelPaths)),
-			new(AnimationBinaryConstants.TexturesSectionId, WriteStringListSection(animation.RelativeTexturePaths)),
 			new(AnimationBinaryConstants.MeshesSectionId, WriteWorldObjectsSection(animation.Meshes)),
 		];
 
 		bw.Write7BitEncodedInt(sections.Count);
 		foreach (Section section in sections)
 			section.Write(bw);
-	}
-
-	private static byte[] WriteStringListSection(IReadOnlyCollection<string> values)
-	{
-		using MemoryStream ms = new();
-		using BinaryWriter bw = new(ms);
-		bw.Write7BitEncodedInt(values.Count);
-		foreach (string path in values)
-			bw.Write(path);
-
-		return ms.ToArray();
 	}
 
 	private static byte[] WriteWorldObjectsSection(IReadOnlyCollection<AnimationMesh> animationMeshes)
@@ -48,7 +38,6 @@ public static class AnimationBinarySerializer
 		{
 			bw.Write(am.RelativeModelPath);
 			bw.Write(am.MeshName);
-			bw.Write(am.TextureName);
 		}
 
 		return ms.ToArray();
