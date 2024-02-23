@@ -36,7 +36,6 @@ public static class AnimationBinarySerializer
 		bw.Write7BitEncodedInt(animationMeshes.Count);
 		foreach (AnimationMesh am in animationMeshes)
 		{
-			bw.Write(am.RelativeModelPath);
 			bw.Write(am.MeshName);
 		}
 

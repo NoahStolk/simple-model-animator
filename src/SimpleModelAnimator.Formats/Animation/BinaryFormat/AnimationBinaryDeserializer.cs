@@ -57,10 +57,9 @@ public static class AnimationBinaryDeserializer
 		List<AnimationMesh> animationMeshes = [];
 		for (int i = 0; i < count; i++)
 		{
-			string relativeModelPath = br.ReadString();
 			string meshName = br.ReadString();
 
-			AnimationMesh am = new(relativeModelPath, meshName);
+			AnimationMesh am = new(meshName);
 			animationMeshes.Add(am);
 		}
 

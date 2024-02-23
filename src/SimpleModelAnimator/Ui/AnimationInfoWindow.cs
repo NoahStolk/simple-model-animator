@@ -36,8 +36,7 @@ public static class AnimationInfoWindow
 			for (int i = 0; i < animation.Meshes.Count; i++)
 			{
 				AnimationMesh mesh = animation.Meshes[i];
-				ImGui.Text(Inline.Span($"Model: {mesh.RelativeModelPath}"));
-				ImGui.Text(Inline.Span($"Mesh: {mesh.MeshName}"));
+				ImGui.Text(mesh.MeshName);
 			}
 
 			ImGui.TreePop();

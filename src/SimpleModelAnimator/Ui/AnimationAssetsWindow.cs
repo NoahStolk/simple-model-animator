@@ -62,7 +62,7 @@ public static class AnimationAssetsWindow
 
 		AnimationState.Animation.Meshes.Clear();
 		if (ObjState.ModelData != null)
-			AnimationState.Animation.Meshes.AddRange(ObjState.ModelData.Meshes.Select(m => new AnimationMesh(AnimationState.Animation.ObjPath, m.ObjectName)));
+			AnimationState.Animation.Meshes.AddRange(ObjState.ModelData.Meshes.Select(m => new AnimationMesh(m.ObjectName)));
 		else
 			DebugState.AddWarning("Model data is null. Failed to add meshes.");
 

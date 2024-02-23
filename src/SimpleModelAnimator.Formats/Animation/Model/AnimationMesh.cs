@@ -2,17 +2,15 @@
 
 public class AnimationMesh
 {
-	public readonly string RelativeModelPath;
 	public readonly string MeshName;
 
-	public AnimationMesh(string relativeModelPath, string meshName)
+	public AnimationMesh(string meshName)
 	{
-		RelativeModelPath = relativeModelPath;
 		MeshName = meshName;
 	}
 
 	public AnimationMesh DeepCopy()
 	{
-		return new(RelativeModelPath, MeshName);
+		return new(MeshName);
 	}
 }
