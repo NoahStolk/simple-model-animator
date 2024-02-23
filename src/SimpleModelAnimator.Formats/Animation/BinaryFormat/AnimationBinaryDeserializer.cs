@@ -22,6 +22,7 @@ public static class AnimationBinaryDeserializer
 		if (version != _version)
 			throw new NotSupportedException("Unsupported version");
 
+		int frameCount = br.Read7BitEncodedInt();
 		float framesPerSecond = br.ReadSingle();
 		bool hasObjPath = br.ReadBoolean();
 		string? objPath = hasObjPath ? br.ReadString() : null;
@@ -45,6 +46,7 @@ public static class AnimationBinaryDeserializer
 
 		return new()
 		{
+			FrameCount = frameCount,
 			FramesPerSecond = framesPerSecond,
 			ObjPath = objPath,
 			Meshes = animationMeshes,

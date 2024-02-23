@@ -2,6 +2,7 @@
 
 public class AnimationData
 {
+	public required int FrameCount;
 	public required float FramesPerSecond;
 	public required string? ObjPath;
 	public required List<AnimationMesh> Meshes;
@@ -10,6 +11,7 @@ public class AnimationData
 	{
 		return new()
 		{
+			FrameCount = 60,
 			FramesPerSecond = 30,
 			ObjPath = string.Empty,
 			Meshes = [],
@@ -24,6 +26,7 @@ public class AnimationData
 
 		return new()
 		{
+			FrameCount = FrameCount,
 			FramesPerSecond = FramesPerSecond,
 			ObjPath = ObjPath,
 			Meshes = newMeshes,

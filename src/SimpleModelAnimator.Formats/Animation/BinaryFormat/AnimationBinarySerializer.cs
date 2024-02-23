@@ -14,6 +14,7 @@ public static class AnimationBinarySerializer
 		// Header
 		bw.Write(AnimationBinaryConstants.Header);
 		bw.Write7BitEncodedInt(_version);
+		bw.Write7BitEncodedInt(animation.FrameCount);
 		bw.Write(animation.FramesPerSecond);
 		bw.Write(animation.ObjPath != null);
 		if (animation.ObjPath != null)
