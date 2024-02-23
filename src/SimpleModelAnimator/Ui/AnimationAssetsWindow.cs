@@ -74,7 +74,7 @@ public static class AnimationAssetsWindow
 	{
 		Vector3 origin = Vector3.Zero;
 		foreach (ushort vertex in meshData.Faces.Select(face => face.Position))
-			origin += modelData.Positions[vertex];
+			origin += modelData.Positions[vertex - 1];
 		origin /= meshData.Faces.Count;
 
 		return new(meshData.ObjectName, origin, null, []);
