@@ -7,30 +7,26 @@ using SimpleModelAnimator.Utils;
 
 namespace SimpleModelAnimator.Rendering;
 
-public static class MeshContainer
+public static class ModelContainer
 {
-	private static readonly Dictionary<string, MeshEntry> _meshes = new();
+	private static readonly Dictionary<string, List<MeshEntry>> _models = new();
 
-	public static MeshEntry? GetMesh(string path)
+	public static List<MeshEntry> GetMeshes(string modelPath)
 	{
-		if (_meshes.TryGetValue(path, out MeshEntry? data))
-			return data;
-
-		DebugState.AddWarning($"Cannot find mesh '{path}'");
-		return null;
+		return _models.TryGetValue(modelPath, out List<MeshEntry>? meshes) ? meshes : [];
 	}
 
 	public static void Rebuild(string? animationFilePath)
 	{
-		_meshes.Clear();
+		_models.Clear();
 
 		string? animationDirectory = Path.GetDirectoryName(animationFilePath);
 		if (animationDirectory == null)
 			return;
 
-		foreach (string meshPath in AnimationState.Animation.RelativeModelPaths)
+		foreach (string modelPath in AnimationState.Animation.RelativeModelPaths)
 		{
-			string absolutePath = Path.Combine(animationDirectory, meshPath);
+			string absolutePath = Path.Combine(animationDirectory, modelPath);
 
 			if (!File.Exists(absolutePath))
 				continue;
@@ -39,24 +35,22 @@ public static class MeshContainer
 			if (modelData.Meshes.Count == 0)
 				continue;
 
-			Mesh mainMesh = GetMesh(modelData, modelData.Meshes[0]);
-			uint vao = CreateFromMesh(mainMesh);
+			foreach (MeshData meshData in modelData.Meshes)
+				AddMesh(modelPath, modelData, meshData);
+		}
 
-			Vector3 boundingMin = new(float.MaxValue);
-			Vector3 boundingMax = new(float.MinValue);
-			foreach (Vector3 position in mainMesh.Vertices.Select(v => v.Position))
-			{
-				boundingMin = Vector3.Min(boundingMin, position);
-				boundingMax = Vector3.Max(boundingMax, position);
-			}
+		void AddMesh(string meshPath, ModelData modelData, MeshData meshData)
+		{
+			Mesh mesh = GetMesh(modelData, meshData);
+			uint vao = CreateFromMesh(mesh);
 
 			// Find main mesh edges.
 			Dictionary<Edge, List<Vector3>> edges = new();
-			for (int i = 0; i < modelData.Meshes[0].Faces.Count; i += 3)
+			for (int i = 0; i < meshData.Faces.Count; i += 3)
 			{
-				uint a = (ushort)(modelData.Meshes[0].Faces[i + 0].Position - 1);
-				uint b = (ushort)(modelData.Meshes[0].Faces[i + 1].Position - 1);
-				uint c = (ushort)(modelData.Meshes[0].Faces[i + 2].Position - 1);
+				uint a = (ushort)(meshData.Faces[i + 0].Position - 1);
+				uint b = (ushort)(meshData.Faces[i + 1].Position - 1);
+				uint c = (ushort)(meshData.Faces[i + 2].Position - 1);
 
 				Vector3 positionA = modelData.Positions[(int)a];
 				Vector3 positionB = modelData.Positions[(int)b];
@@ -82,8 +76,11 @@ public static class MeshContainer
 				lineIndices.Add(edge.Key.B);
 			}
 
-			MeshEntry entry = new(mainMesh, vao, lineIndices.ToArray(), VaoUtils.CreateLineVao(modelData.Positions.ToArray()), boundingMin, boundingMax);
-			_meshes.Add(meshPath, entry);
+			MeshEntry entry = new(mesh, vao, lineIndices.ToArray(), VaoUtils.CreateLineVao(modelData.Positions.ToArray()));
+			if (!_models.TryGetValue(meshPath, out List<MeshEntry>? meshes))
+				_models.Add(meshPath, [entry]);
+			else
+				meshes.Add(entry);
 		}
 
 		void AddEdge(IDictionary<Edge, List<Vector3>> edges, Edge d, Vector3 normal)

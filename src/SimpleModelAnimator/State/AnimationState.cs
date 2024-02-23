@@ -188,7 +188,7 @@ public static class AnimationState
 	{
 		try
 		{
-			MeshContainer.Rebuild(animationFilePath);
+			ModelContainer.Rebuild(animationFilePath);
 			TextureContainer.Rebuild(animationFilePath);
 			return true;
 		}

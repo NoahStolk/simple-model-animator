@@ -158,24 +158,48 @@ public static class SceneRenderer
 	private static unsafe void RenderMeshes(ShaderCacheEntry meshShader)
 	{
 		int modelUniform = meshShader.GetUniformLocation("model");
-		for (int i = 0; i < AnimationState.Animation.Meshes.Count; i++)
+		// for (int i = 0; i < AnimationState.Animation.Meshes.Count; i++)
+		// {
+		// 	AnimationMesh animationMesh = AnimationState.Animation.Meshes[i];
+		// 	Gl.UniformMatrix4x4(modelUniform, animationMesh.GetModelMatrix());
+		//
+		// 	MeshEntry? mesh = MeshContainer.GetMesh(animationMesh.RelativeModelPath);
+		// 	if (mesh == null)
+		// 		continue;
+		//
+		// 	uint? textureId = TextureContainer.GetTexture(animationMesh.TextureName);
+		// 	if (textureId == null)
+		// 		continue;
+		//
+		// 	Gl.BindTexture(TextureTarget.Texture2D, textureId.Value);
+		//
+		// 	Gl.BindVertexArray(mesh.MeshVao);
+		// 	fixed (uint* index = &mesh.Mesh.Indices[0])
+		// 		Gl.DrawElements(PrimitiveType.Triangles, (uint)mesh.Mesh.Indices.Length, DrawElementsType.UnsignedInt, index);
+		// }
+
+		for (int i = 0; i < AnimationState.Animation.RelativeModelPaths.Count; i++)
 		{
-			AnimationMesh animationMesh = AnimationState.Animation.Meshes[i];
-			Gl.UniformMatrix4x4(modelUniform, animationMesh.GetModelMatrix());
+			string modelPath = AnimationState.Animation.RelativeModelPaths[i];
+			Gl.UniformMatrix4x4(modelUniform, Matrix4x4.Identity);
 
-			MeshEntry? mesh = MeshContainer.GetMesh(animationMesh.RelativeModelPath);
-			if (mesh == null)
-				continue;
+			List<MeshEntry> meshes = ModelContainer.GetMeshes(modelPath);
 
-			uint? textureId = TextureContainer.GetTexture(animationMesh.TextureName);
-			if (textureId == null)
-				continue;
+			// uint? textureId = TextureContainer.GetTexture(animationMesh.TextureName);
+			// if (textureId == null)
+			// 	continue;
 
-			Gl.BindTexture(TextureTarget.Texture2D, textureId.Value);
+			// Gl.BindTexture(TextureTarget.Texture2D, textureId.Value);
 
-			Gl.BindVertexArray(mesh.MeshVao);
-			fixed (uint* index = &mesh.Mesh.Indices[0])
-				Gl.DrawElements(PrimitiveType.Triangles, (uint)mesh.Mesh.Indices.Length, DrawElementsType.UnsignedInt, index);
+			// TEMP
+			Gl.BindTexture(TextureTarget.Texture2D, 1);
+
+			foreach (MeshEntry mesh in meshes)
+			{
+				Gl.BindVertexArray(mesh.MeshVao);
+				fixed (uint* index = &mesh.Mesh.Indices[0])
+					Gl.DrawElements(PrimitiveType.Triangles, (uint)mesh.Mesh.Indices.Length, DrawElementsType.UnsignedInt, index);
+			}
 		}
 	}
 }
