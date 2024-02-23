@@ -58,9 +58,10 @@ public static class AnimationEditorWindow
 			ImGui.SetCursorPos(cursorPosition);
 			ImGui.InvisibleButton("3d_view", framebufferSize);
 			bool isFocused = ImGui.IsItemHovered();
-			Camera3d.Update(ImGui.GetIO().DeltaTime, isFocused);
+			float dt = ImGui.GetIO().DeltaTime;
+			Camera3d.Update(dt, isFocused);
 
-			MainLogic.Run();
+			MainLogic.Run(dt);
 		}
 
 		ImGui.End();

@@ -75,6 +75,7 @@ public static class MainWindow
 		AnimationEditorWindow.Render();
 		AnimationAssetsWindow.Render();
 		AnimationInfoWindow.Render();
+		AnimationPlayerWindow.Render();
 		WarningsWindow.Render();
 	}
 }

@@ -74,6 +74,32 @@ public static class AnimationState
 		using (FileStream fs = new(path, FileMode.Open))
 		{
 			AnimationData animation = AnimationBinaryDeserializer.ReadAnimation(fs);
+
+			// TEMP DATA
+
+			// Torus
+			animation.Meshes[3].ParentMeshName = "ArmSecondary";
+			animation.Meshes[3].KeyFrames.Add(new(0, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
+			animation.Meshes[3].KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 4f)));
+			animation.Meshes[3].KeyFrames.Add(new(60, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
+
+			// ArmSecondary
+			animation.Meshes[2].ParentMeshName = "ArmPrimary";
+			animation.Meshes[2].KeyFrames.Add(new(0, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 2f)));
+			animation.Meshes[2].KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 4f)));
+			animation.Meshes[2].KeyFrames.Add(new(60, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 2f)));
+
+			// ArmPrimary
+			animation.Meshes[1].ParentMeshName = "Base";
+			animation.Meshes[1].KeyFrames.Add(new(0, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
+			animation.Meshes[1].KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 4f)));
+			animation.Meshes[1].KeyFrames.Add(new(60, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
+
+			// Base
+			animation.Meshes[0].KeyFrames.Add(new(0, Vector3.Zero, Quaternion.Identity));
+			animation.Meshes[0].KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitZ, MathF.PI / 4f)));
+			animation.Meshes[0].KeyFrames.Add(new(60, Vector3.Zero, Quaternion.Identity));
+
 			SetAnimation(path, animation);
 		}
 

@@ -6,7 +6,7 @@ public class AnimationMesh
 {
 	public readonly string MeshName;
 	public Vector3 Origin;
-	public readonly string? ParentMeshName;
+	public string? ParentMeshName;
 	public readonly List<AnimationKeyFrame> KeyFrames;
 
 	public AnimationMesh(string meshName, Vector3 origin, string? parentMeshName, List<AnimationKeyFrame> keyFrames)
