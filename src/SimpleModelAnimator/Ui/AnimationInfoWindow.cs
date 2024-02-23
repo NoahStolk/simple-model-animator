@@ -105,14 +105,14 @@ public static class AnimationInfoWindow
 
 								ImGui.TableNextRow();
 
+								ImGui.TableNextColumn();
 								ImGui.Text(Inline.Span(keyFrame.Index));
-								ImGui.TableNextColumn();
 
+								ImGui.TableNextColumn();
 								ImGui.Text(Inline.Span(keyFrame.Position, "0.00", CultureInfo.InvariantCulture));
-								ImGui.TableNextColumn();
 
-								ImGui.Text(Inline.Span(keyFrame.Rotation, "0.00", CultureInfo.InvariantCulture));
 								ImGui.TableNextColumn();
+								ImGui.Text(Inline.Span(keyFrame.Rotation, "0.00", CultureInfo.InvariantCulture));
 							}
 
 							ImGui.EndTable();
