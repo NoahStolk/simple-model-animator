@@ -2,6 +2,8 @@
 using ImGuiNET;
 using SimpleModelAnimator.Formats.Animation.Model;
 using SimpleModelAnimator.State;
+using SimpleModelAnimator.Utils;
+using System.Globalization;
 
 namespace SimpleModelAnimator.Ui;
 
@@ -33,10 +35,67 @@ public static class AnimationInfoWindow
 
 		if (ImGui.TreeNode("Meshes"))
 		{
-			for (int i = 0; i < animation.Meshes.Count; i++)
+			if (ImGui.BeginTable("MeshTable", 4))
 			{
-				AnimationMesh mesh = animation.Meshes[i];
-				ImGui.Text(mesh.MeshName);
+				ImGui.TableSetupColumn("Name");
+				ImGui.TableSetupColumn("Origin");
+				ImGui.TableSetupColumn("Parent");
+				ImGui.TableSetupColumn("Key frames");
+
+				ImGui.TableHeadersRow();
+
+				for (int i = 0; i < animation.Meshes.Count; i++)
+				{
+					AnimationMesh mesh = animation.Meshes[i];
+
+					ImGui.TableNextRow();
+
+					ImGui.TableNextColumn();
+					ImGui.Text(mesh.MeshName);
+
+					ImGui.TableNextColumn();
+					ImGui.Text(Inline.Span(mesh.Origin, "0.00", CultureInfo.InvariantCulture));
+
+					ImGui.TableNextColumn();
+					ImGuiUtils.TextOptional(mesh.ParentMeshName);
+
+					ImGui.TableNextColumn();
+					ImGui.Text(Inline.Span(mesh.KeyFrames.Count));
+
+					if (ImGui.IsItemHovered() && mesh.KeyFrames.Count > 0)
+					{
+						ImGui.BeginTooltip();
+						if (ImGui.BeginTable("KeyFrameTable", 3))
+						{
+							ImGui.TableSetupColumn("Index");
+							ImGui.TableSetupColumn("Position");
+							ImGui.TableSetupColumn("Rotation");
+							ImGui.TableHeadersRow();
+
+							for (int j = 0; j < mesh.KeyFrames.Count; j++)
+							{
+								AnimationKeyFrame keyFrame = mesh.KeyFrames[j];
+
+								ImGui.TableNextRow();
+
+								ImGui.Text(Inline.Span(keyFrame.Index));
+								ImGui.TableNextColumn();
+
+								ImGui.Text(Inline.Span(keyFrame.Position, "0.00", CultureInfo.InvariantCulture));
+								ImGui.TableNextColumn();
+
+								ImGui.Text(Inline.Span(keyFrame.Rotation, "0.00", CultureInfo.InvariantCulture));
+								ImGui.TableNextColumn();
+							}
+
+							ImGui.EndTable();
+						}
+
+						ImGui.EndTooltip();
+					}
+				}
+
+				ImGui.EndTable();
 			}
 
 			ImGui.TreePop();

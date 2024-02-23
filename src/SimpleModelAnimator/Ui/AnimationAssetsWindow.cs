@@ -1,4 +1,5 @@
-﻿using ImGuiNET;
+﻿using Detach.Parsers.Model;
+using ImGuiNET;
 using SimpleModelAnimator.Formats.Animation.Model;
 using SimpleModelAnimator.State;
 using System.Diagnostics;
@@ -62,10 +63,20 @@ public static class AnimationAssetsWindow
 
 		AnimationState.Animation.Meshes.Clear();
 		if (ObjState.ModelData != null)
-			AnimationState.Animation.Meshes.AddRange(ObjState.ModelData.Meshes.Select(m => new AnimationMesh(m.ObjectName)));
+			AnimationState.Animation.Meshes.AddRange(ObjState.ModelData.Meshes.Select(m => Create(ObjState.ModelData, m)));
 		else
 			DebugState.AddWarning("Model data is null. Failed to add meshes.");
 
 		AnimationState.Track("Added assets");
+	}
+
+	private static AnimationMesh Create(ModelData modelData, MeshData meshData)
+	{
+		Vector3 origin = Vector3.Zero;
+		foreach (ushort vertex in meshData.Faces.Select(face => face.Position))
+			origin += modelData.Positions[vertex];
+		origin /= meshData.Faces.Count;
+
+		return new(meshData.ObjectName, origin, null, []);
 	}
 }

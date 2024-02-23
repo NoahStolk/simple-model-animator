@@ -1,4 +1,5 @@
 ﻿using SimpleModelAnimator.Formats.Animation.Model;
+using SimpleModelAnimator.Formats.Extensions;
 
 namespace SimpleModelAnimator.Formats.Animation.BinaryFormat;
 
@@ -21,7 +22,7 @@ public static class AnimationBinarySerializer
 		// Sections
 		List<Section> sections =
 		[
-			new(AnimationBinaryConstants.MeshesSectionId, WriteWorldObjectsSection(animation.Meshes)),
+			new(AnimationBinaryConstants.MeshesSectionId, WriteMeshesSection(animation.Meshes)),
 		];
 
 		bw.Write7BitEncodedInt(sections.Count);
@@ -29,7 +30,7 @@ public static class AnimationBinarySerializer
 			section.Write(bw);
 	}
 
-	private static byte[] WriteWorldObjectsSection(IReadOnlyCollection<AnimationMesh> animationMeshes)
+	private static byte[] WriteMeshesSection(IReadOnlyCollection<AnimationMesh> animationMeshes)
 	{
 		using MemoryStream ms = new();
 		using BinaryWriter bw = new(ms);
@@ -37,6 +38,15 @@ public static class AnimationBinarySerializer
 		foreach (AnimationMesh am in animationMeshes)
 		{
 			bw.Write(am.MeshName);
+			bw.Write(am.Origin);
+			bw.WriteOptional(am.ParentMeshName);
+			bw.Write7BitEncodedInt(am.KeyFrames.Count);
+			foreach (AnimationKeyFrame kf in am.KeyFrames)
+			{
+				bw.Write7BitEncodedInt(kf.Index);
+				bw.Write(kf.Position);
+				bw.Write(kf.Rotation);
+			}
 		}
 
 		return ms.ToArray();
