@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleModelAnimator", "SimpleModelAnimator\SimpleModelAnimator.csproj", "{19BA1F20-8AF3-4A55-A227-BCF24953B97A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleModelAnimator.Formats", "SimpleModelAnimator.Formats\SimpleModelAnimator.Formats.csproj", "{D301522B-175C-4B45-99DC-C00EF3105602}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{19BA1F20-8AF3-4A55-A227-BCF24953B97A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19BA1F20-8AF3-4A55-A227-BCF24953B97A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19BA1F20-8AF3-4A55-A227-BCF24953B97A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19BA1F20-8AF3-4A55-A227-BCF24953B97A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D301522B-175C-4B45-99DC-C00EF3105602}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D301522B-175C-4B45-99DC-C00EF3105602}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D301522B-175C-4B45-99DC-C00EF3105602}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D301522B-175C-4B45-99DC-C00EF3105602}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
