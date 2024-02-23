@@ -27,6 +27,7 @@ public static class AnimationInfoWindow
 	private static void RenderAnimation(AnimationData animation)
 	{
 		ImGui.Text(Inline.Span($"FPS: {animation.FramesPerSecond}"));
+		ImGui.Text(Inline.Span($"Frame count: {animation.FrameCount}"));
 		ImGui.Text(Inline.Span($"OBJ file: {animation.ObjPath}"));
 		ImGui.Text(Inline.Span($"Meshes: {animation.Meshes.Count}"));
 

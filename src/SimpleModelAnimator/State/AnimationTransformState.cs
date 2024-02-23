@@ -50,17 +50,17 @@ public static class AnimationTransformState
 			if (currentFrame.Index > frameIndex)
 			{
 				AnimationKeyFrame previousFrame = animationMesh.KeyFrames[i - 1];
-				return new(previousFrame, currentFrame, CalculateInterpolation(frameIndex, previousFrame, currentFrame));
+				return new(previousFrame, currentFrame, CalculateInterpolation(frameIndex, previousFrame.Index, currentFrame.Index));
 			}
 		}
 
-		float interpolation = CalculateInterpolation(frameIndex, animationMesh.KeyFrames[^1], animationMesh.KeyFrames[0]);
+		float interpolation = CalculateInterpolation(frameIndex, animationMesh.KeyFrames[^1].Index, AnimationState.Animation.FrameCount);
 		return new(animationMesh.KeyFrames[^1], animationMesh.KeyFrames[0], interpolation);
 	}
 
-	private static float CalculateInterpolation(int frameIndex, AnimationKeyFrame previousFrame, AnimationKeyFrame currentFrame)
+	private static float CalculateInterpolation(int frameIndex, int previousFrameIndex, int nextFrameIndex)
 	{
-		return (frameIndex - previousFrame.Index) / (float)(currentFrame.Index - previousFrame.Index);
+		return (frameIndex - previousFrameIndex) / (float)(nextFrameIndex - previousFrameIndex);
 	}
 
 	private sealed record KeyFrameResult(AnimationKeyFrame Previous, AnimationKeyFrame Next, float Interpolation);

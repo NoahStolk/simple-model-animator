@@ -73,30 +73,26 @@ public static class AnimationState
 			AnimationData animation = AnimationBinaryDeserializer.ReadAnimation(fs);
 
 			// TEMP DATA
-			AnimationMesh baseMesh = animation.Meshes[0];
-			AnimationMesh primaryArm = animation.Meshes[1];
-			AnimationMesh secondaryArm = animation.Meshes[2];
-			AnimationMesh torus = animation.Meshes[3];
+			AnimationMesh baseMesh = animation.Meshes[3];
+			AnimationMesh primaryArm = animation.Meshes[2];
+			AnimationMesh secondaryArm = animation.Meshes[1];
+			AnimationMesh torus = animation.Meshes[0];
 
 			baseMesh.IsRoot = true;
 			baseMesh.KeyFrames.Add(new(0, Vector3.Zero, Quaternion.Identity));
 			baseMesh.KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitZ, MathF.PI / 4f)));
-			baseMesh.KeyFrames.Add(new(60, Vector3.Zero, Quaternion.Identity));
 			baseMesh.Children.Add(primaryArm);
 
-			primaryArm.KeyFrames.Add(new(0, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
-			primaryArm.KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 4f)));
-			primaryArm.KeyFrames.Add(new(60, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
+			primaryArm.KeyFrames.Add(new(0, Vector3.Zero, Quaternion.Identity));
+			primaryArm.KeyFrames.Add(new(30, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 4f)));
 			primaryArm.Children.Add(secondaryArm);
 
-			secondaryArm.KeyFrames.Add(new(0, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 2f)));
-			secondaryArm.KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 4f)));
-			secondaryArm.KeyFrames.Add(new(60, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 2f)));
+			secondaryArm.KeyFrames.Add(new(0, Vector3.Zero, Quaternion.Identity));
+			secondaryArm.KeyFrames.Add(new(30, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitX, MathF.PI / 4f)));
 			secondaryArm.Children.Add(torus);
 
-			torus.KeyFrames.Add(new(0, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
-			torus.KeyFrames.Add(new(30, new(0, 1, 0), Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 4f)));
-			torus.KeyFrames.Add(new(60, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2f)));
+			torus.KeyFrames.Add(new(0, Vector3.Zero, Quaternion.Identity));
+			torus.KeyFrames.Add(new(30, Vector3.Zero, Quaternion.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 4f)));
 
 			SetAnimation(path, animation);
 		}
