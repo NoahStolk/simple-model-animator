@@ -63,20 +63,15 @@ public static class AnimationAssetsWindow
 
 		AnimationState.Animation.Meshes.Clear();
 		if (ObjState.ModelData != null)
-			AnimationState.Animation.Meshes.AddRange(ObjState.ModelData.Meshes.Select(m => Create(ObjState.ModelData, m)));
+			AnimationState.Animation.Meshes.AddRange(ObjState.ModelData.Meshes.Select(Create));
 		else
 			DebugState.AddWarning("Model data is null. Failed to add meshes.");
 
 		AnimationState.Track("Added assets");
 	}
 
-	private static AnimationMesh Create(ModelData modelData, MeshData meshData)
+	private static AnimationMesh Create(MeshData meshData)
 	{
-		Vector3 origin = Vector3.Zero;
-		foreach (ushort vertex in meshData.Faces.Select(face => face.Position))
-			origin += modelData.Positions[vertex - 1];
-		origin /= meshData.Faces.Count;
-
-		return new(meshData.ObjectName, false, origin, [], []);
+		return new(meshData.ObjectName, false, Vector3.Zero, [], []);
 	}
 }
