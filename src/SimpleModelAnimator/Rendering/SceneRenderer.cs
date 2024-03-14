@@ -21,6 +21,7 @@ public static class SceneRenderer
 
 		RenderOrigin(lineShader);
 		RenderGrid(lineShader);
+		RenderMeshOrigins(lineShader);
 
 		ShaderCacheEntry meshShader = InternalContent.Shaders["Mesh"];
 		Gl.UseProgram(meshShader.Id);
@@ -105,6 +106,24 @@ public static class SceneRenderer
 				Gl.UniformMatrix4x4(lineModelUniform, scaleMat * Matrix4x4.CreateFromAxisAngle(Vector3.UnitY, MathF.PI / 2) * Matrix4x4.CreateTranslation(new Vector3(min * AnimationEditorState.GridCellSize, 0, i * AnimationEditorState.GridCellSize) + offset));
 				Gl.DrawArrays(PrimitiveType.Lines, 0, 2);
 			}
+		}
+	}
+
+	private static void RenderMeshOrigins(ShaderCacheEntry lineShader)
+	{
+		int lineModelUniform = lineShader.GetUniformLocation("model");
+		int lineColorUniform = lineShader.GetUniformLocation("color");
+
+		Gl.Uniform4(lineColorUniform, new Vector4(1, 0, 1, 1));
+		Gl.LineWidth(2);
+
+		foreach (MeshEntry mesh in ModelContainer.Meshes)
+		{
+			Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(0.25f);
+			Matrix4x4 translationMatrix = Matrix4x4.CreateTranslation(mesh.Origin);
+
+			Gl.UniformMatrix4x4(lineModelUniform, scaleMatrix * translationMatrix);
+			Gl.DrawArrays(PrimitiveType.Lines, 0, 6);
 		}
 	}
 

@@ -15,6 +15,7 @@ public static class AnimationTransformState
 				continue;
 
 			// Only calculate root meshes here. The rest is done recursively.
+			mesh.Origin = animationMesh.Origin;
 			mesh.Transformation = Matrix4x4.Identity;
 			CalculateTransformation(animationMesh, mesh, AnimationPlayerState.FrameIndex);
 		}
@@ -37,6 +38,7 @@ public static class AnimationTransformState
 			if (childMesh == null)
 				continue;
 
+			mesh.Origin = animationMesh.Origin;
 			childMesh.Transformation = transformation;
 			CalculateTransformation(child, childMesh, frameIndex);
 		}
